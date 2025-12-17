@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Try X Assistant – Cosmetics</title>
+  <title>Cosmetics – Try X Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
@@ -9,16 +9,35 @@
       font-family: Arial, sans-serif;
       padding: 16px;
     }
+
+    h2 {
+      margin-bottom: 12px;
+    }
+
     input {
       width: 100%;
       padding: 12px;
       font-size: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      box-sizing: border-box;
     }
+
     .product {
       border-bottom: 1px solid #ddd;
-      padding: 14px 0;
+      padding: 16px 0;
     }
+
+    .product strong {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    ul {
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
     .why {
       font-style: italic;
       color: #555;
@@ -34,7 +53,7 @@
 <input
   type="text"
   id="searchInput"
-  placeholder="Search product, category, or recommendation"
+  placeholder="Search by base product or category"
   onkeyup="filterProducts()"
 />
 
@@ -42,21 +61,21 @@
 
 <script>
 const SHEET_ID = "1Usliu51ZpXL6RpbbVPVwuoMjBCcY3L9rhEKzTgRngDE";
-const SHEET_NAME = "Cosmetics"; // this matches your tab name
+const SHEET_NAME = "Cosmetics"; // matches your tab name exactly
 
 const URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
 
 let products = [];
 
 fetch(URL)
-  .then(res => res.json())
+  .then(response => response.json())
   .then(data => {
     products = data;
     renderProducts(products);
   })
   .catch(() => {
     document.getElementById("productList").innerHTML =
-      "<p>Unable to load products. Check sheet sharing or tab name.</p>";
+      "<p>Unable to load products. Please check sheet access or tab name.</p>";
   });
 
 function renderProducts(list) {
@@ -67,11 +86,13 @@ function renderProducts(list) {
     container.innerHTML += `
       <div class="product">
         <strong>${p["Base Product (Brand + Product + Shade)"]}</strong>
+
         <div>Recommended with:</div>
         <ul>
           <li>${p["Cross-Sell Recommendation 1"]}</li>
           <li>${p["Cross-Sell Recommendation 2"]}</li>
         </ul>
+
         <div class="why">Why this works: ${p["Why This Works"]}</div>
       </div>
     `;
@@ -79,16 +100,13 @@ function renderProducts(list) {
 }
 
 function filterProducts() {
-  const q = document.getElementById("searchInput").value.toLowerCase();
+  const query = document.getElementById("searchInput").value.toLowerCase();
 
   const filtered = products.filter(p =>
     `
-      ${p["Category"]}
       ${p["Base Product (Brand + Product + Shade)"]}
-      ${p["Cross-Sell Recommendation 1"]}
-      ${p["Cross-Sell Recommendation 2"]}
-      ${p["Why This Works"]}
-    `.toLowerCase().includes(q)
+      ${p["Category"]}
+    `.toLowerCase().includes(query)
   );
 
   renderProducts(filtered);

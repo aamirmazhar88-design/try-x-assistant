@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Try X Assistant</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    .product {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Try X Assistant</h2>
+
+<input
+  type="text"
+  id="searchInput"
+  placeholder="Search product, brand, or shade"
+  onkeyup="filterProducts()"
+/>
+
+<div id="productList">
+
+  <div class="product">
+    <strong>NARS Fard A Joues Poudre – Orgasm X</strong><br>
+    Recommendation 1: Fenty Beauty Diamond Bomb – Rose Rave<br>
+    Recommendation 2: NARS Powermatte Lipstick – Tease Me 111
+  </div>
+
+  <div class="product">
+    <strong>NARS Climax Mascara – Explicit Black</strong><br>
+    Recommendation 1: Charlotte Tilbury Luxury Palette – Bella Sofia<br>
+    Recommendation 2: MAC Velvet Teddy
+  </div>
+
+</div>
+
+<script>
+function filterProducts() {
+  let input = document.getElementById("searchInput").value.toLowerCase();
+  let products = document.getElementsByClassName("product");
+
+  for (let i = 0; i < products.length; i++) {
+    let text = products[i].innerText.toLowerCase();
+    products[i].style.display = text.includes(input) ? "" : "none";
+  }
+}
+</script>
+
+</body>
+</html>

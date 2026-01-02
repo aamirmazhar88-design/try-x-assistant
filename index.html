@@ -1,171 +1,508 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Try X Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 16px;
+    :root{
+      --text:#111;
+      --muted:#666;
+      --border:#e5e5e5;
+      --bg:#fff;
+      --btn:#1c1c1c;
+      --btnText:#fff;
+    }
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 24px;
+      color: var(--text);
+      background: var(--bg);
+    }
+    h1{ margin: 0 0 14px; font-size: 28px; }
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      margin: 8px 0 14px;
+    }
+    .tab{
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      cursor:pointer;
+      background:#f8f8f8;
+      user-select:none;
+    }
+    .tab.active{
+      background: var(--btn);
+      color: var(--btnText);
+      border-color: var(--btn);
     }
 
-    h2 {
-      margin-bottom: 12px;
+    .layout{
+      display:grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+      align-items:start;
     }
 
-    .toggle {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
+    .search{
+      width:100%;
+      padding: 14px 16px;
+      border:1px solid var(--border);
+      border-radius: 6px;
+      font-size: 16px;
+      margin-bottom: 18px;
     }
 
-    .toggle button {
-      padding: 10px 16px;
+    .card{
+      padding: 18px 0;
+      border-top:1px solid var(--border);
+    }
+    .titleRow{
+      display:flex;
+      justify-content: space-between;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .productTitle{
+      font-weight: 800;
+      font-size: 18px;
+      margin: 0 0 4px;
+      line-height: 1.25;
+    }
+    .priceLine{
+      color: var(--muted);
       font-size: 14px;
-      cursor: pointer;
-      border: 1px solid #ccc;
-      background: #f5f5f5;
+      margin: 2px 0 10px;
     }
-
-    .toggle button.active {
-      background: #000;
-      color: #fff;
-      border-color: #000;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      margin-bottom: 24px;
-      box-sizing: border-box;
-    }
-
-    .product {
-      border-bottom: 1px solid #ddd;
-      padding: 16px 0;
-    }
-
-    .product strong {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 16px;
-    }
-
-    ul {
-      margin-top: 6px;
-      margin-bottom: 6px;
-    }
-
-    .why {
+    .label{ font-weight: 700; margin: 6px 0 6px; }
+    ul{ margin: 6px 0 6px 18px; }
+    .why{
+      color: var(--muted);
       font-style: italic;
-      color: #555;
-      margin-top: 6px;
+      margin-top: 8px;
     }
 
-    .profile {
-      color: #666;
-      margin-bottom: 6px;
+    .btn{
+      background: var(--btn);
+      color: var(--btnText);
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 12px;
+      cursor:pointer;
+      font-size: 14px;
+      white-space:nowrap;
+    }
+    .btn.secondary{
+      background:#fff;
+      color: var(--text);
+      border:1px solid var(--border);
+    }
+
+    .bill{
+      border:1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      position: sticky;
+      top: 12px;
+      background:#fff;
+    }
+    .bill h2{
+      margin: 0 0 10px;
+      font-size: 18px;
+    }
+    .billMuted{ color: var(--muted); font-size: 13px; margin: 0 0 10px; }
+
+    .billItem{
+      border-top:1px solid var(--border);
+      padding: 10px 0;
+    }
+    .billItemTop{
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items:flex-start;
+    }
+    .billName{
+      font-weight: 700;
+      font-size: 13px;
+      line-height:1.25;
+    }
+    .billMeta{
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .qtyRow{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-top: 8px;
+    }
+    .qtyBtn{
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      border:1px solid var(--border);
+      background:#fff;
+      cursor:pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .qtyVal{
+      min-width: 22px;
+      text-align:center;
+      font-weight: 700;
+    }
+    .removeBtn{
+      border:0;
+      background: transparent;
+      color:#b00020;
+      cursor:pointer;
+      font-size: 12px;
+      padding: 0;
+      margin-top: 6px;
+    }
+    .totals{
+      border-top:1px solid var(--border);
+      margin-top: 12px;
+      padding-top: 12px;
+      font-size: 14px;
+    }
+    .row{
+      display:flex;
+      justify-content: space-between;
+      margin: 6px 0;
+    }
+    .row strong{ font-size: 15px; }
+    .billActions{
+      display:flex;
+      gap:10px;
+      margin-top: 12px;
+    }
+
+    .status{
+      color: var(--muted);
+      font-size: 13px;
+      margin: 8px 0 0;
+    }
+
+    @media (max-width: 980px){
+      .layout{ grid-template-columns: 1fr; }
+      .bill{ position: relative; top:auto; }
     }
   </style>
 </head>
-
 <body>
+  <h1>Try X Assistant</h1>
 
-<h2>Try X Assistant</h2>
+  <div class="tabs">
+    <div class="tab active" id="tabCos" data-tab="cosmetics">Cosmetics</div>
+    <div class="tab" id="tabPer" data-tab="perfumes">Perfumes</div>
+  </div>
 
-<div class="toggle">
-  <button id="cosmeticsBtn" class="active" onclick="loadSheet('Cosmetics')">Cosmetics</button>
-  <button id="perfumesBtn" onclick="loadSheet('Perfumes')">Perfumes</button>
-</div>
+  <div class="layout">
+    <div>
+      <input id="searchInput" class="search" type="text" placeholder="Search by base product" />
+      <div id="status" class="status">Loading data…</div>
+      <div id="results"></div>
+    </div>
 
-<input
-  type="text"
-  id="searchInput"
-  placeholder="Search by base product"
-  onkeyup="filterProducts()"
-/>
+    <aside class="bill">
+      <h2>Final Bill</h2>
+      <p class="billMuted">Prices are treated as final (VAT included). Adjust quantity or remove items anytime.</p>
 
-<div id="productList"></div>
+      <div id="billItems"></div>
+
+      <div class="totals">
+        <div class="row"><strong>Total (VAT included)</strong><strong id="total">AED 0.00</strong></div>
+
+        <div class="billActions">
+          <button class="btn secondary" id="clearBill">Clear</button>
+          <button class="btn" id="copySummary">Copy summary</button>
+        </div>
+      </div>
+    </aside>
+  </div>
 
 <script>
+/**
+ * CONFIG
+ * - Make sure your Google Sheet is shared publicly (Anyone with link can view).
+ * - Add a column header named exactly: "Price" in BOTH tabs (Cosmetics + Perfumes).
+ *   (It can be in Column F; the code reads by header name, not by letter.)
+ */
 const SHEET_ID = "1Usliu51ZpXL6RpbbVPVwuoMjBCcY3L9rhEKzTgRngDE";
 
-let currentSheet = "Cosmetics";
-let products = [];
+const SHEETS = {
+  cosmetics: {
+    sheetName: "Cosmetics",
+    baseField: "Base Product (Brand + Product + Shade)",
+    rec1Field: "Cross-Sell Recommendation 1",
+    rec2Field: "Cross-Sell Recommendation 2",
+    whyField:  "Why This Works",
+    priceField:"Price"
+  },
+  perfumes: {
+    sheetName: "Perfumes",
+    baseField: "Base Perfume",
+    rec1Field: "Cross-Sell Recommendation 1",
+    rec2Field: "Cross-Sell Recommendation 2",
+    whyField:  "Why This Works",
+    priceField:"Price"
+  }
+};
 
-function loadSheet(sheetName) {
-  currentSheet = sheetName;
-  document.getElementById("searchInput").value = "";
+let activeTab = "cosmetics";
+let data = { cosmetics: [], perfumes: [] };
 
-  document.getElementById("cosmeticsBtn").classList.remove("active");
-  document.getElementById("perfumesBtn").classList.remove("active");
+// Bill stored as map keyed by itemId
+let bill = new Map();
 
-  document.getElementById(
-    sheetName === "Cosmetics" ? "cosmeticsBtn" : "perfumesBtn"
-  ).classList.add("active");
+// ---------- Helpers ----------
+function formatAED(n){
+  const x = (Number(n) || 0);
+  return `AED ${x.toFixed(2)}`;
+}
+function safeLower(s){ return (s || "").toString().toLowerCase(); }
 
-  fetch(`https://opensheet.elk.sh/${SHEET_ID}/${sheetName}`)
-    .then(res => res.json())
-    .then(data => {
-      products = data;
-      renderProducts(products);
-    })
-    .catch(() => {
-      document.getElementById("productList").innerHTML =
-        "<p>Unable to load products.</p>";
+function parsePrice(v){
+  // Accept numbers, "75", "AED 75", etc.
+  if (v === null || v === undefined) return 0;
+  const s = v.toString().replace(/[^0-9.]/g, "");
+  const num = parseFloat(s);
+  return isNaN(num) ? 0 : num;
+}
+
+function calcTotal(){
+  let total = 0;
+  for (const item of bill.values()){
+    total += (item.price * item.qty);
+  }
+  return total;
+}
+
+// ---------- Google Sheets fetch via GViz ----------
+async function fetchSheetAsObjects(sheetName){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  const res = await fetch(url);
+  const text = await res.text();
+
+  const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
+  const table = json.table;
+
+  const cols = table.cols.map(c => (c.label || "").trim());
+  const rows = table.rows || [];
+
+  const objects = rows.map(r => {
+    const obj = {};
+    r.c.forEach((cell, idx) => {
+      obj[cols[idx]] = cell ? (cell.v ?? "") : "";
     });
+    return obj;
+  });
+
+  return objects;
 }
 
-function renderProducts(list) {
-  const container = document.getElementById("productList");
-  container.innerHTML = "";
+async function loadAll(){
+  document.getElementById("status").textContent = "Loading data…";
+  try{
+    const cos = await fetchSheetAsObjects(SHEETS.cosmetics.sheetName);
+    const per = await fetchSheetAsObjects(SHEETS.perfumes.sheetName);
 
-  list.forEach(p => {
-    const baseName =
-      currentSheet === "Cosmetics"
-        ? p["Base Product (Brand + Product + Shade)"]
-        : p["Base Perfume"];
+    data.cosmetics = cos.filter(x => (x[SHEETS.cosmetics.baseField] || "").toString().trim().length > 0);
+    data.perfumes  = per.filter(x => (x[SHEETS.perfumes.baseField] || "").toString().trim().length > 0);
 
-    const profile =
-      currentSheet === "Perfumes" && p["Profile"]
-        ? `<div class="profile">Profile: ${p["Profile"]}</div>`
-        : "";
+    document.getElementById("status").textContent = "";
+    renderResults();
+    renderBill();
+  }catch(e){
+    console.error(e);
+    document.getElementById("status").textContent =
+      "Could not load the Google Sheet. Check sharing settings and that your sheet tabs are named Cosmetics and Perfumes.";
+  }
+}
 
-    container.innerHTML += `
-      <div class="product">
-        <strong>${baseName}</strong>
-        ${profile}
-        <div>Recommended with:</div>
-        <ul>
-          <li>${p["Cross-Sell Recommendation 1"]}</li>
-          <li>${p["Cross-Sell Recommendation 2"]}</li>
-        </ul>
-        <div class="why">Why this works: ${p["Why This Works"]}</div>
+// ---------- Rendering ----------
+function renderResults(){
+  const cfg = SHEETS[activeTab];
+  const q = safeLower(document.getElementById("searchInput").value.trim());
+  const list = data[activeTab];
+
+  const filtered = q
+    ? list.filter(item => safeLower(item[cfg.baseField]).includes(q))
+    : list;
+
+  const resultsEl = document.getElementById("results");
+  resultsEl.innerHTML = "";
+
+  if (!filtered.length){
+    resultsEl.innerHTML = `<div class="status">No matches.</div>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    const base = (item[cfg.baseField] || "").toString();
+    const rec1 = (item[cfg.rec1Field] || "").toString();
+    const rec2 = (item[cfg.rec2Field] || "").toString();
+    const why  = (item[cfg.whyField]  || "").toString();
+    const price = parsePrice(item[cfg.priceField]);
+
+    const itemId = `${activeTab}::${base}`;
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="titleRow">
+        <div>
+          <div class="productTitle">${escapeHtml(base)}</div>
+          <div class="priceLine">${price > 0 ? `Price: ${formatAED(price)} (VAT included)` : `<span style="color:#b00020">Price missing (add "Price" in the sheet)</span>`}</div>
+        </div>
+        <div>
+          <button class="btn" data-add="${escapeAttr(itemId)}">Add to bill</button>
+        </div>
       </div>
+
+      <div class="label">Recommended with:</div>
+      <ul>
+        ${rec1 ? `<li>${escapeHtml(rec1)}</li>` : ``}
+        ${rec2 ? `<li>${escapeHtml(rec2)}</li>` : ``}
+      </ul>
+
+      ${why ? `<div class="why">Why this works: ${escapeHtml(why)}</div>` : ``}
     `;
+
+    card.querySelector(`[data-add]`).addEventListener("click", () => addToBill(itemId, base, price, activeTab));
+    resultsEl.appendChild(card);
   });
 }
 
-function filterProducts() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
+function renderBill(){
+  const billEl = document.getElementById("billItems");
+  billEl.innerHTML = "";
 
-  const filtered = products.filter(p => {
-    const baseName =
-      currentSheet === "Cosmetics"
-        ? p["Base Product (Brand + Product + Shade)"]
-        : p["Base Perfume"];
+  if (bill.size === 0){
+    billEl.innerHTML = `<div class="status">No items added yet.</div>`;
+  } else {
+    for (const [id, item] of bill.entries()){
+      const row = document.createElement("div");
+      row.className = "billItem";
 
-    return baseName.toLowerCase().includes(query);
-  });
+      const lineTotal = item.price * item.qty;
 
-  renderProducts(filtered);
+      row.innerHTML = `
+        <div class="billItemTop">
+          <div>
+            <div class="billName">${escapeHtml(item.name)}</div>
+            <div class="billMeta">${item.tabLabel} • ${formatAED(item.price)} each • Line: ${formatAED(lineTotal)}</div>
+
+            <div class="qtyRow">
+              <button class="qtyBtn" data-dec="${escapeAttr(id)}">−</button>
+              <div class="qtyVal">${item.qty}</div>
+              <button class="qtyBtn" data-inc="${escapeAttr(id)}">+</button>
+            </div>
+
+            <button class="removeBtn" data-remove="${escapeAttr(id)}">Remove item</button>
+          </div>
+        </div>
+      `;
+
+      row.querySelector(`[data-inc]`).addEventListener("click", () => changeQty(id, +1));
+      row.querySelector(`[data-dec]`).addEventListener("click", () => changeQty(id, -1));
+      row.querySelector(`[data-remove]`).addEventListener("click", () => removeItem(id));
+
+      billEl.appendChild(row);
+    }
+  }
+
+  document.getElementById("total").textContent = formatAED(calcTotal());
 }
 
-// Initial load
-loadSheet("Cosmetics");
+// ---------- Bill actions ----------
+function addToBill(id, name, price, tab){
+  if (!price || price <= 0){
+    alert('Price is missing for this item. Add a "Price" value in the Google Sheet first.');
+    return;
+  }
+  const tabLabel = tab === "cosmetics" ? "Cosmetics" : "Perfumes";
+
+  if (bill.has(id)){
+    bill.get(id).qty += 1;
+  } else {
+    bill.set(id, { name, price, qty: 1, tabLabel });
+  }
+  renderBill();
+}
+
+function changeQty(id, delta){
+  if (!bill.has(id)) return;
+  const item = bill.get(id);
+  item.qty += delta;
+  if (item.qty <= 0){
+    bill.delete(id);
+  }
+  renderBill();
+}
+
+function removeItem(id){
+  bill.delete(id);
+  renderBill();
+}
+
+document.getElementById("clearBill").addEventListener("click", () => {
+  bill.clear();
+  renderBill();
+});
+
+document.getElementById("copySummary").addEventListener("click", async () => {
+  const lines = [];
+  for (const item of bill.values()){
+    lines.push(`${item.name} x${item.qty} = ${formatAED(item.price * item.qty)}`);
+  }
+  lines.push(``);
+  lines.push(`Total (VAT included): ${formatAED(calcTotal())}`);
+
+  const txt = lines.join("\n");
+  try{
+    await navigator.clipboard.writeText(txt);
+    alert("Bill summary copied.");
+  }catch(e){
+    prompt("Copy this:", txt);
+  }
+});
+
+// ---------- Tabs + Search ----------
+document.getElementById("tabCos").addEventListener("click", () => switchTab("cosmetics"));
+document.getElementById("tabPer").addEventListener("click", () => switchTab("perfumes"));
+
+function switchTab(tab){
+  activeTab = tab;
+  document.getElementById("tabCos").classList.toggle("active", tab === "cosmetics");
+  document.getElementById("tabPer").classList.toggle("active", tab === "perfumes");
+  document.getElementById("searchInput").value = "";
+  renderResults();
+}
+
+document.getElementById("searchInput").addEventListener("input", renderResults);
+
+// ---------- Basic escaping ----------
+function escapeHtml(str){
+  return (str ?? "").toString()
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+function escapeAttr(str){
+  return escapeHtml(str).replaceAll("`","&#096;");
+}
+
+// Load
+loadAll();
 </script>
-
 </body>
 </html>
